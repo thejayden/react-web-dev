@@ -55,26 +55,24 @@ class Dishdetail extends Component {
     }
 
     render() {
-        const dish = this.props.dishs
-        if (dish==null){
+        if (this.props.dish==null){
             return (
                 <div></div>
             )
         }
-        
-        const dishContent = this.renderDish(dish)
-
-        const commentContent = this.renderComments(dish.comments)
 
         return (
-            <div className="row">
-                <div className="col-12 col-md-5 m-1">
-                    {dishContent}
-                </div>
-                <div className="col-12 col-md-5 m-1">
-                    {commentContent}
+            <div className="container">
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        {this.renderDish(this.props.dish)}
+                    </div>
+                    <div className="col-12 col-md-5 m-1">
+                        {this.renderComments(this.props.dish.comments)}
+                    </div>
                 </div>
             </div>
+
         );
     }
 }
