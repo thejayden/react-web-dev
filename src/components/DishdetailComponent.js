@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent'
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -104,13 +105,19 @@ function RenderDish({ dish }) {
 
     if (dish != null)
         return (
-            <Card>
-                <CardImg top src={baseUrl+dish.image} alt={dish.name} />
-                <CardBody>
-                    <CardTitle>{dish.name}</CardTitle>
-                    <CardText>{dish.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                <Card>
+                    <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+                    <CardBody>
+                        <CardTitle>{dish.name}</CardTitle>
+                        <CardText>{dish.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         );
     else
 
@@ -120,22 +127,26 @@ function RenderDish({ dish }) {
 }
 
 function RenderComments({ comment, postComment, dishId }) {
-
-    const dishComments = comment.map((commentsEach) => {
+    if (comment != null) {
         return (
-            <ul key={commentsEach.id} className='list-unstyled'>
-                <p>{commentsEach.comment}</p>
-                <p>-- {commentsEach.author}, {new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(commentsEach.date))}</p>
-            </ul>
+            <div>
+                <h4><strong>Comments</strong></h4>
+                <Stagger in>
+                    {comment.map(commentsEach => {
+                        return (
+                            <Fade in key={commentsEach.id}>
+                                <ul key={commentsEach.id} className='list-unstyled'>
+                                    <p>{commentsEach.comment}</p>
+                                    <p>-- {commentsEach.author}, {new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(commentsEach.date))}</p>
+                                </ul>
+                            </Fade>
+                        );
+                    })}
+                </Stagger>
+                <commentForm dishId={dishId} postComment={postComment} />
+            </div>
         )
-    })
-    return (
-        <div>
-            <h4><strong>Comments</strong></h4>
-            {dishComments}
-            <CommentForm dishId={dishId} postComment={postComment} />
-        </div>
-    )
+    }
 }
 
 const DishDetail = (props) => {
@@ -183,7 +194,7 @@ const DishDetail = (props) => {
             </div>
         );
     }
-    else 
+    else
         return (
             <div></div>
         );
